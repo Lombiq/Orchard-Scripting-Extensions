@@ -1,4 +1,4 @@
-﻿Name: Scripting Extensions
+﻿Name: Orchard Scripting Extensions: Core
 AntiForgery: enabled
 Author: The Orchard Hungary Team
 Website: http://orchardscriptingext.codeplex.com
@@ -7,7 +7,7 @@ OrchardVersion: 1.5
 Description: Base module for some Orchard scripting extensions
 Features:
     OrchardHUN.Scripting:
-		Name: Scripting Extensions
+		Name: Orchard Scripting Extensions: Core
         Description: Base module for some Orchard scripting extensions
 		Category: Scripting
 		Dependencies: Navigation
