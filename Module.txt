@@ -6,7 +6,7 @@ Version: 1.0
 OrchardVersion: 1.5
 Description: Base module for some Orchard scripting services.
 Features:
-    OrchardHUN.Scripting.Php:
+    OrchardHUN.Scripting:
 		Name: Dynamic Scripting Services
         Description: Base module for some Orchard scripting services.
 		Category: Scripting
