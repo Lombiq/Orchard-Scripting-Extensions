@@ -1,13 +1,13 @@
-﻿Name: Dynamic Scripting Services
+﻿Name: Scripting Extensions
 AntiForgery: enabled
 Author: The Orchard Hungary Team
-Website: http://orchardphpscripting.codeplex.com
+Website: http://orchardscriptingext.codeplex.com
 Version: 1.0
 OrchardVersion: 1.5
-Description: Base module for some Orchard scripting services.
+Description: Base module for some Orchard scripting extensions
 Features:
     OrchardHUN.Scripting:
-		Name: Dynamic Scripting Services
-        Description: Base module for some Orchard scripting services.
+		Name: Scripting Extensions
+        Description: Base module for some Orchard scripting extensions
 		Category: Scripting
 		Dependencies: Navigation
