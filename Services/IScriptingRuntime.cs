@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Orchard;
+using OrchardHUN.Scripting.Models;
 
 namespace OrchardHUN.Scripting.Services
 {
     /// <summary>
-    /// Represents a scripting runtime (like PHP, C#) that can be used to evaluate script source.
+    /// Represents a scripting runtime (like PHP, C#) that can be used to evaluate script source code.
     /// </summary>
-    public interface IScriptingRuntime : IDependency
+    public interface IScriptingRuntime : ISingletonDependency
     {
         string Engine { get; }
-        object Run(string code);
+        dynamic ExecuteExpression(string expression, ScriptScope scope);
     }
 }

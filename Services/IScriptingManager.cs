@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Orchard;
+using OrchardHUN.Scripting.Models;
 
 namespace OrchardHUN.Scripting.Services
 {
     /// <summary>
     /// Central entry point to run scripts
     /// </summary>
-    /// <remarks>
-    /// Gets IScriptingRuntimes injected.
-    /// </remarks>
     public interface IScriptingManager : IDependency
     {
-        object Run(string engine, string code);
+        ScriptScope CreateScope(string name);
+        dynamic ExecuteExpression(string engine, string expression, ScriptScope scope);
     }
 }
