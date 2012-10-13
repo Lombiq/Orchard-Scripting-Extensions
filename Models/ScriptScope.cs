@@ -5,7 +5,7 @@ namespace OrchardHUN.Scripting.Models
 {
     public abstract class ScriptScope : IDisposable
     {
-        protected readonly Dictionary<string, object> _variables = new Dictionary<string, object>();
+        protected readonly Dictionary<string, dynamic> _variables = new Dictionary<string, dynamic>();
 
         public string Name { get; private set; }
         public ICollection<KeyValuePair<string, dynamic>> Variables
