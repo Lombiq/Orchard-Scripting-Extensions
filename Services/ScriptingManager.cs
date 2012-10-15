@@ -16,6 +16,11 @@ namespace OrchardHUN.Scripting.Services
         }
 
 
+        public IEnumerable<string> ListRegisteredEngines()
+        {
+            return _runtimes.Keys;
+        }
+
         public ScriptScope CreateScope(string name)
         {
             if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
