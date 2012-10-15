@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Orchard.DisplayManagement;
 using Orchard.Environment.Extensions;
 using Orchard.Events;
 using Orchard.Localization;
-using Orchard.Scripting;
 using OrchardHUN.Scripting.Services;
 
 namespace OrchardHUN.Scripting.Rules
@@ -21,13 +20,13 @@ namespace OrchardHUN.Scripting.Rules
     }
 
     [OrchardFeature("OrchardHUN.Scripting.Rules")]
-    public class ExecutionAction : IActionProvider
+    public class ScriptExecutionAction : IActionProvider
     {
-        private readonly IEnumerable<IScriptExpressionEvaluator> _evaluators;
+        private readonly IScriptingManager _scriptingManager;
 
-        public ExecutionAction(IEnumerable<IScriptExpressionEvaluator> evaluators)
+        public ScriptExecutionAction(IScriptingManager scriptingManager)
         {
-            _evaluators = evaluators;
+            _scriptingManager = scriptingManager;
             T = NullLocalizer.Instance;
         }
 
@@ -35,7 +34,7 @@ namespace OrchardHUN.Scripting.Rules
 
         public void Describe(dynamic describe)
         {
-            Func<dynamic, LocalizedString> display = context => new LocalizedString(context.Properties["description"]);
+            Func<dynamic, LocalizedString> display = context => new LocalizedString(context.Properties["ScriptExecutionDescription"]);
 
             describe.For("Script Execution", T("Script Execution"), T("Script Execution"))
                 .Element("ScriptExecution", T("Script Execution"), T("Executes a script using a scripting engine."), (Func<dynamic, bool>)Run, display, "ScriptExecution");
@@ -43,19 +42,23 @@ namespace OrchardHUN.Scripting.Rules
 
         private bool Run(dynamic context)
         {
-            // TODO: implement
+            using (var scope = _scriptingManager.CreateScope(context.Properties["ScriptExecutionDescription"] + " ActionScript"))
+            {
+                _scriptingManager.ExecuteExpression(context.Properties["ScriptExecutionEngine"], context.Properties["ScriptExecutionScript"], scope);
+            }
+
             return true;
         }
     }
 
     [OrchardFeature("OrchardHUN.Scripting.Rules")]
-    public class ExecutionForms : IFormProvider
+    public class ScriptExecutionForms : IFormProvider
     {
         protected dynamic Shape { get; set; }
         private readonly IScriptingManager _scriptingManager;
         public Localizer T { get; set; }
 
-        public ExecutionForms(IShapeFactory shapeFactory, IScriptingManager scriptingManager)
+        public ScriptExecutionForms(IShapeFactory shapeFactory, IScriptingManager scriptingManager)
         {
             Shape = shapeFactory;
             _scriptingManager = scriptingManager;
@@ -67,6 +70,7 @@ namespace OrchardHUN.Scripting.Rules
             Func<IShapeFactory, object> form =
                 shape =>
                 {
+                    var engines = _scriptingManager.ListRegisteredEngines();
                     var f = Shape.Form(
                         Id: "ScriptExecution",
                         _Description: Shape.Textbox(
@@ -74,7 +78,7 @@ namespace OrchardHUN.Scripting.Rules
                             Title: T("Description"),
                             Description: T("Message that will be displayed in the Actions list."),
                             Classes: new[] { "textMedium" }),
-                        _Condition: Shape.TextArea(
+                        _Script: Shape.TextArea(
                             Id: "scriptexecution-script", Name: "ScriptExecutionScript",
                             Title: T("Script"),
                             Description: T("Enter some lines of code to run."),
@@ -83,12 +87,12 @@ namespace OrchardHUN.Scripting.Rules
                             Id: "scriptexecution-engine", Name: "ScriptExecutionEngine",
                             Title: T("Scripting Engine"),
                             Description: T("Select a scripting engine to run your code."),
-                            Size: 5,
+                            Size: engines.Count(),
                             Multiple: false
                             )
                         );
 
-                    foreach (var engine in _scriptingManager.ListRegisteredEngines())
+                    foreach (var engine in engines)
                     {
                         f._Engine.Add(new SelectListItem { Value = engine, Text = engine });
                     }
