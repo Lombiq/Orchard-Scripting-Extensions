@@ -81,11 +81,16 @@
       <Project>{9916839C-39FC-4CEB-A5AF-89CA7E87119F}</Project>
       <Name>Orchard.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Orchard.Scripting\Orchard.Scripting.csproj">
+      <Project>{99002B65-86F7-415E-BF4A-381AA8AB9CCC}</Project>
+      <Name>Orchard.Scripting</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminMenu.cs" />
     <Compile Include="Exceptions\ScriptRuntimeException.cs" />
     <Compile Include="Models\ScriptScope.cs" />
+    <Compile Include="Rules\Execution.cs" />
     <Compile Include="Services\IScriptingManager.cs" />
     <Compile Include="Services\IScriptingRuntime.cs" />
     <Compile Include="Services\ScriptingManager.cs" />
