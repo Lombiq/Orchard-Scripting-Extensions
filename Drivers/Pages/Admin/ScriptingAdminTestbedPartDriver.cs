@@ -17,6 +17,11 @@ namespace OrchardHUN.Scripting.Drivers.Pages.Admin
         private readonly IScriptingManager _scriptingManager;
         private readonly INotifier _notifier;
 
+        protected override string Prefix
+        {
+            get { return "OrchardHUN.Scripting.ScriptingAdminTestbedPart"; }
+        }
+
         public Localizer T { get; set; }
 
 

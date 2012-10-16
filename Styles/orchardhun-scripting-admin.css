@@ -1,6 +1,8 @@
-﻿#orchardhun-scripting-testbed textarea
+﻿#orchardhun-scripting-testbed-editor
 {
+    margin-top: 2em;
     height: 25em;
+    position: relative;
 }
 
 #orchardhun-scripting-testbed-output

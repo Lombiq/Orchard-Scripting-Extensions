@@ -2,6 +2,8 @@
            
 @{
     Style.Require("ScriptingAdmin");
+    Script.Require("jQuery").AtFoot();
+    Script.Include("http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js");
 }
 
 <h1>@Html.TitleForPage(T("Scripting testbed"))</h1>
@@ -9,6 +11,8 @@
 <div id="orchardhun-scripting-testbed">
     @using (Html.BeginFormAntiForgeryPost())
     {
+        @Html.HiddenFor(m => m.Expression)
+
         @Html.LabelFor(m => m.SelectedEngine, T("Scripting engine"))
         <select id="@Html.FieldIdFor(m => m.SelectedEngine)" name="@Html.FieldNameFor(m => m.SelectedEngine)">
         @foreach (var engine in Model.RegisteredEngines)
@@ -17,8 +21,7 @@
         }
         </select>
         
-        @Html.LabelFor(m => m.Expression, T("Expression"))
-        @Html.TextAreaFor(m => m.Expression)
+        <div id="orchardhun-scripting-testbed-editor">@Model.Expression</div>
         <span class="hint">@T("Test your code here. This code should be a pure expression, so if your engine of choice supports code blocks (like PHP does with &#60;?php, ?&#62; tags) don's use them here.")</span>
         
         <input type="submit" class="button" value="@T("Run")" />
@@ -32,3 +35,17 @@
     </div>
     }
 </div>
+
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        (function ($) {
+            var editor = ace.edit("orchardhun-scripting-testbed-editor");
+
+            var expression = $("#@Html.FieldIdFor(m => m.Expression)");
+            $(expression[0].form).submit(function () {
+                expression.val(editor.getValue());
+            });
+        })(jQuery);
+    </script>
+}

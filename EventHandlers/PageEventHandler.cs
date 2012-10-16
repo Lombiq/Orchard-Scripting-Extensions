@@ -22,7 +22,7 @@ namespace OrchardHUN.Scripting.EventHandlers
 
         public void OnPageInitializing(PageContext pageContext)
         {
-            if (pageContext.Group != PageConfigs.AdminGroup) return;
+            if (!pageContext.Page.IsPage("Testbed", PageConfigs.AdminGroup)) return;
 
             var testbedPart = new ScriptingAdminTestbedPart();
             testbedPart.RegisteredEnginesField.Loader(() => _scriptingManagerWork.Value.ListRegisteredEngines());
