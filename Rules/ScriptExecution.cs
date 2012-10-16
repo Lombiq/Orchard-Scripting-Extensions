@@ -44,6 +44,7 @@ namespace OrchardHUN.Scripting.Rules
         {
             using (var scope = _scriptingManager.CreateScope(context.Properties["ScriptExecutionDescription"] + " ActionScript"))
             {
+                scope.SetVariable("Tokens", context.Tokens);
                 _scriptingManager.ExecuteExpression(context.Properties["ScriptExecutionEngine"], context.Properties["ScriptExecutionScript"], scope);
             }
 
