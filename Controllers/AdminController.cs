@@ -6,60 +6,84 @@ using Orchard.Localization;
 using Orchard.UI.Admin;
 using Orchard.UI.Notify;
 using OrchardHUN.Scripting.Exceptions;
-using OrchardHUN.Scripting.ViewModels;
 using OrchardHUN.Scripting.Services;
+using Piedone.HelpfulLibraries.Contents.DynamicPages;
+using Orchard.ContentManagement;
+using Orchard.Mvc;
+using Orchard.Security;
 
 namespace OrchardHUN.Scripting.Controllers
 {
     [Admin]
-    public class AdminController : Controller
+    public class AdminController : Controller, IUpdateModel
     {
         private readonly IScriptingManager _scriptingManager;
         private readonly IOrchardServices _orchardServices;
+        private readonly IContentManager _contentManager;
+        private readonly IAuthorizer _authorizer;
+        private readonly IPageEventHandler _pageEventHandler;
 
         public Localizer T { get; set; }
 
 
         public AdminController(
             IScriptingManager scriptingManager,
-            IOrchardServices orchardServices)
+            IOrchardServices orchardServices,
+            IPageEventHandler pageEventHandler)
         {
             _scriptingManager = scriptingManager;
             _orchardServices = orchardServices;
+            _contentManager = orchardServices.ContentManager;
+            _authorizer = orchardServices.Authorizer;
+            _pageEventHandler = pageEventHandler;
 
             T = NullLocalizer.Instance;
         }
 
 
-        public ActionResult TestBed()
+        public ActionResult Testbed()
         {
-            return View((object)new TestBedViewModel { RegisteredEngines = _scriptingManager.ListRegisteredEngines() });
+            if (!_authorizer.Authorize(StandardPermissions.SiteOwner, T("You're not allowed to use the scripting testbed.")))
+                return new HttpUnauthorizedResult();
+
+            var page = NewPage("Testbed");
+            _pageEventHandler.OnPageBuilt(new PageContext(page, PageConfigs.AdminGroup));
+
+            return PageResult(page);
         }
 
-        [HttpPost/*, ValidateInput(false)*/]
-        public ActionResult TestBed(TestBedViewModel viewModel)
+        [HttpPost, ActionName("Testbed")]
+        public ActionResult TestbedPost()
         {
-            viewModel.RegisteredEngines = _scriptingManager.ListRegisteredEngines();
+            if (!_authorizer.Authorize(StandardPermissions.SiteOwner, T("You're not allowed to use the scripting testbed.")))
+                return new HttpUnauthorizedResult();
 
-            if (!String.IsNullOrEmpty(viewModel.Code))
-            {
-                try
-                {
-                    using (var scope = _scriptingManager.CreateScope("testbed"))
-                    {
-                        viewModel.Output = _scriptingManager.ExecuteExpression(viewModel.SelectedEngine, viewModel.Code, scope);
-                    }
-                }
-                catch (ScriptRuntimeException ex)
-                {
-                    _orchardServices.Notifier.Error(
-                        T("There was a glitch with your code: {0}" 
-                        + Environment.NewLine + Environment.NewLine 
-                        + "Details:" + Environment.NewLine + "{1}", ex.Message, ex.InnerException.Message));
-                }
-            }
+            var page = NewPage("Testbed");
+            _pageEventHandler.OnPageBuilt(new PageContext(page, PageConfigs.AdminGroup));
+            _contentManager.UpdateEditor(page, this);
 
-            return View((object)viewModel);
+            return PageResult(page);
+        }
+
+        bool IUpdateModel.TryUpdateModel<TModel>(TModel model, string prefix, string[] includeProperties, string[] excludeProperties)
+        {
+            return TryUpdateModel(model, prefix, includeProperties, excludeProperties);
+        }
+
+        void IUpdateModel.AddModelError(string key, LocalizedString errorMessage)
+        {
+            ModelState.AddModelError(key, errorMessage.ToString());
+        }
+
+
+        private IContent NewPage(string pageName)
+        {
+            return _orchardServices.ContentManager.NewPage(pageName, PageConfigs.AdminGroup, _pageEventHandler);
+        }
+
+        private ShapeResult PageResult(IContent page)
+        {
+            return new ShapeResult(this, _orchardServices.ContentManager.BuildPageDisplay(page));
         }
     }
 }

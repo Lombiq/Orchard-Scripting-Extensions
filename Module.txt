@@ -10,9 +10,9 @@ Features:
 		Name: Orchard Scripting Extensions: Core
         Description: Base module for some Orchard scripting extensions
 		Category: Scripting
-		Dependencies: Navigation
-	OrchardHUN.Scripting.Rules
+		Dependencies: Navigation, Piedone.HelpfulLibraries.Contents
+	OrchardHUN.Scripting.Rules:
 		Name: Orchard Scripting Extensions: Rules
 		Description: Adds the ability to run code through scripting engines in a Rule Action
-		Category: Scripting
-		Dependencies: OrchardHUN.Scripting, Orchard.Scripting.Rules
+		Category: Rules
+		Dependencies: OrchardHUN.Scripting, Orchard.Rules

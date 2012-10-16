@@ -1,4 +1,4 @@
-﻿@model OrchardHUN.Scripting.ViewModels.TestBedViewModel
+﻿@model OrchardHUN.Scripting.Models.Pages.Admin.ScriptingAdminTestbedPart
            
 @{
     Style.Require("ScriptingAdmin");
@@ -17,8 +17,8 @@
         }
         </select>
         
-        @Html.LabelFor(m => m.Code, T("Code"))
-        @Html.TextAreaFor(m => m.Code)
+        @Html.LabelFor(m => m.Expression, T("Expression"))
+        @Html.TextAreaFor(m => m.Expression)
         <span class="hint">@T("Test your code here. This code should be a pure expression, so if your engine of choice supports code blocks (like PHP does with &#60;?php, ?&#62; tags) don's use them here.")</span>
         
         <input type="submit" class="button" value="@T("Run")" />

@@ -14,7 +14,7 @@ namespace OrchardHUN.Scripting
         {
             builder/*.AddImageSet("scripting")*/
                 .Add(T("Scripting"), "4",
-                    menu => menu.Action("TestBed", "Admin", new { area = "OrchardHUN.Scripting" }).Permission(StandardPermissions.SiteOwner));
+                    menu => menu.Action("Testbed", "Admin", new { area = "OrchardHUN.Scripting" }).Permission(StandardPermissions.SiteOwner));
         }
     }
 }
