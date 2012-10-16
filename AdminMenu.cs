@@ -1,5 +1,6 @@
 ﻿using Orchard.Localization;
 using Orchard.UI.Navigation;
+using Orchard.Security;
 
 namespace OrchardHUN.Scripting
 {
@@ -12,7 +13,8 @@ namespace OrchardHUN.Scripting
         public void GetNavigation(NavigationBuilder builder)
         {
             builder/*.AddImageSet("scripting")*/
-                .Add(T("Scripting"), "4");
+                .Add(T("Scripting"), "4",
+                    menu => menu.Action("TestBed", "Admin", new { area = "OrchardHUN.Scripting" }).Permission(StandardPermissions.SiteOwner));
         }
     }
 }

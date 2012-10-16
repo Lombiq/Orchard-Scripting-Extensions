@@ -1,0 +1,34 @@
+﻿@model OrchardHUN.Scripting.ViewModels.TestBedViewModel
+           
+@{
+    Style.Require("ScriptingAdmin");
+}
+
+<h1>@Html.TitleForPage(T("Scripting testbed"))</h1>
+
+<div id="orchardhun-scripting-testbed">
+    @using (Html.BeginFormAntiForgeryPost())
+    {
+        @Html.LabelFor(m => m.SelectedEngine, T("Scripting engine"))
+        <select id="@Html.FieldIdFor(m => m.SelectedEngine)" name="@Html.FieldNameFor(m => m.SelectedEngine)">
+        @foreach (var engine in Model.RegisteredEngines)
+        {
+             @Html.SelectOption(Model.SelectedEngine, engine, engine)
+        }
+        </select>
+        
+        @Html.LabelFor(m => m.Code, T("Code"))
+        @Html.TextAreaFor(m => m.Code)
+        <span class="hint">@T("Test your code here. This code should be a pure expression, so if your engine of choice supports code blocks (like PHP does with &#60;?php, ?&#62; tags) don's use them here.")</span>
+        
+        <input type="submit" class="button" value="@T("Run")" />
+    }
+
+    @if (!String.IsNullOrEmpty(Model.Output))
+    {
+    <div id="orchardhun-scripting-testbed-output">
+        <h2>@T("Output:")</h2>
+        @Html.Raw(Model.Output)
+    </div>
+    }
+</div>

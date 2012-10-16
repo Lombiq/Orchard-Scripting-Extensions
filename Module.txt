@@ -15,4 +15,4 @@ Features:
 		Name: Orchard Scripting Extensions: Rules
 		Description: Adds the ability to run code through scripting engines in a Rule Action
 		Category: Scripting
-		Dependencies: Orchard.Scripting.Rules
+		Dependencies: OrchardHUN.Scripting, Orchard.Scripting.Rules
