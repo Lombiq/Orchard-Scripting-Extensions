@@ -90,7 +90,7 @@
     <Compile Include="AdminMenu.cs" />
     <Compile Include="Exceptions\ScriptRuntimeException.cs" />
     <Compile Include="Models\ScriptScope.cs" />
-    <Compile Include="Rules\Execution.cs" />
+    <Compile Include="Rules\ScriptExecution.cs" />
     <Compile Include="Services\IScriptingManager.cs" />
     <Compile Include="Services\IScriptingRuntime.cs" />
     <Compile Include="Services\ScriptingManager.cs" />
