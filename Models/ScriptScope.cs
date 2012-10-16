@@ -28,7 +28,7 @@ namespace OrchardHUN.Scripting.Models
             return _variables[name];
         }
 
-        public void SetVariable(string name, object value)
+        public void SetVariable(string name, dynamic value)
         {
             _variables[name] = value;
         }
