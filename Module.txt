@@ -3,14 +3,14 @@ AntiForgery: enabled
 Author: The Orchard Hungary Team
 Website: http://orchardscriptingext.codeplex.com
 Version: 1.0
-OrchardVersion: 1.5
+OrchardVersion: 1.6
 Description: Base module for some Orchard scripting extensions
 Features:
     OrchardHUN.Scripting:
 		Name: Orchard Scripting Extensions: Core
         Description: Base module for some Orchard scripting extensions. Uses the ACE source editor (http://ace.ajax.org) for script editors.
 		Category: Scripting
-		Dependencies: Navigation, Piedone.HelpfulLibraries.Contents, Orchard.jQuery
+		Dependencies: Piedone.HelpfulLibraries.Contents, Orchard.ContentPicker, Orchard.jQuery, Navigation, Title
 	OrchardHUN.Scripting.Rules:
 		Name: Orchard Scripting Extensions: Rules
 		Description: Adds the ability to run code through scripting engines in a Rule Action

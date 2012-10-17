@@ -6,27 +6,17 @@ using Piedone.HelpfulLibraries.Contents.DynamicPages;
 using OrchardHUN.Scripting.Models.Pages.Admin;
 using OrchardHUN.Scripting.Services;
 using Orchard.Environment;
+using Orchard.ContentManagement;
 
 namespace OrchardHUN.Scripting.EventHandlers
 {
     public class PageEventHandler : IPageEventHandler
     {
-        private readonly Work<IScriptingManager> _scriptingManagerWork;
-
-
-        public PageEventHandler(Work<IScriptingManager> scriptingManagerWork)
-        {
-            _scriptingManagerWork = scriptingManagerWork;
-        }
-
-
         public void OnPageInitializing(PageContext pageContext)
         {
             if (!pageContext.Page.IsPage("Testbed", PageConfigs.AdminGroup)) return;
 
-            var testbedPart = new ScriptingAdminTestbedPart();
-            testbedPart.RegisteredEnginesField.Loader(() => _scriptingManagerWork.Value.ListRegisteredEngines());
-            pageContext.Page.ContentItem.Weld(testbedPart);
+            pageContext.Page.ContentItem.Weld(new ScriptingAdminTestbedPart());
         }
 
         public void OnPageInitialized(PageContext pageContext)

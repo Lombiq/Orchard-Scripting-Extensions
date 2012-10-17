@@ -6,6 +6,8 @@ using Orchard.Environment.Extensions;
 using Orchard.Events;
 using Orchard.Localization;
 using OrchardHUN.Scripting.Services;
+using Orchard.ContentManagement;
+using OrchardHUN.Scripting.Models;
 
 namespace OrchardHUN.Scripting.Rules
 {
@@ -23,14 +25,19 @@ namespace OrchardHUN.Scripting.Rules
     public class ScriptExecutionAction : IActionProvider
     {
         private readonly IScriptingManager _scriptingManager;
-
-        public ScriptExecutionAction(IScriptingManager scriptingManager)
-        {
-            _scriptingManager = scriptingManager;
-            T = NullLocalizer.Instance;
-        }
+        private readonly IContentManager _contentManager;
 
         public Localizer T { get; set; }
+
+
+        public ScriptExecutionAction(IScriptingManager scriptingManager, IContentManager contentManager)
+        {
+            _scriptingManager = scriptingManager;
+            _contentManager = contentManager;
+
+            T = NullLocalizer.Instance;
+        }
+        
 
         public void Describe(dynamic describe)
         {
@@ -45,7 +52,8 @@ namespace OrchardHUN.Scripting.Rules
             using (var scope = _scriptingManager.CreateScope(context.Properties["ScriptExecutionDescription"] + " ActionScript"))
             {
                 scope.SetVariable("Tokens", context.Tokens);
-                _scriptingManager.ExecuteExpression(context.Properties["ScriptExecutionEngine"], context.Properties["ScriptExecutionScript"], scope);
+                var script = ((ContentItem)_contentManager.Get(int.Parse(context.Properties["ScriptExecutionScriptId"]), VersionOptions.Published)).As<IScriptAspect>();
+                _scriptingManager.ExecuteExpression(script.Engine, script.Expression, scope);
             }
 
             return true;
@@ -55,16 +63,20 @@ namespace OrchardHUN.Scripting.Rules
     [OrchardFeature("OrchardHUN.Scripting.Rules")]
     public class ScriptExecutionForms : IFormProvider
     {
-        protected dynamic Shape { get; set; }
+        private dynamic Shape { get; set; }
         private readonly IScriptingManager _scriptingManager;
+
         public Localizer T { get; set; }
+
 
         public ScriptExecutionForms(IShapeFactory shapeFactory, IScriptingManager scriptingManager)
         {
             Shape = shapeFactory;
             _scriptingManager = scriptingManager;
+
             T = NullLocalizer.Instance;
         }
+
 
         public void Describe(dynamic context)
         {
@@ -75,28 +87,13 @@ namespace OrchardHUN.Scripting.Rules
                     var f = Shape.Form(
                         Id: "ScriptExecution",
                         _Description: Shape.Textbox(
-                            Id: "scriptexecution-description", Name: "ScriptExecutionDescription",
+                            Id: "orchardhun-scripting-script-execution-description", Name: "ScriptExecutionDescription",
                             Title: T("Description"),
-                            Description: T("Message that will be displayed in the Actions list."),
+                            Description: T("Text that will be displayed in the Actions list."),
                             Classes: new[] { "textMedium" }),
-                        _Script: Shape.TextArea(
-                            Id: "scriptexecution-script", Name: "ScriptExecutionScript",
-                            Title: T("Script"),
-                            Description: T("Enter some lines of code to run."),
-                            Classes: new[] { "tokenized" }),
-                        _Engine: Shape.SelectList(
-                            Id: "scriptexecution-engine", Name: "ScriptExecutionEngine",
-                            Title: T("Scripting Engine"),
-                            Description: T("Select a scripting engine to run your code."),
-                            Size: engines.Count(),
-                            Multiple: false
-                            )
+                        _ScriptPicker: Shape.ScriptPicker(
+                            Name: "ScriptExecutionScriptId")
                         );
-
-                    foreach (var engine in engines)
-                    {
-                        f._Engine.Add(new SelectListItem { Value = engine, Text = engine });
-                    }
 
                     return f;
                 };

@@ -1,8 +1,14 @@
-﻿#orchardhun-scripting-testbed-editor
+﻿#orchardhun-scripting-editor
 {
     margin-top: 2em;
     height: 25em;
     position: relative;
+}
+
+#orchardhun-scripting-testbed-script-picker-selected
+{
+    display: inline-block;
+    margin-left: 1em;
 }
 
 #orchardhun-scripting-testbed-output

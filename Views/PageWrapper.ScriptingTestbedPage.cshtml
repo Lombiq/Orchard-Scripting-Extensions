@@ -1,0 +1,11 @@
+﻿@{
+    Style.Require("ScriptingAdmin");
+}
+
+<h1>@Html.TitleForPage(T("Scripting testbed"))</h1>
+
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+    @Display(Model.Child)
+}

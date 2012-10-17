@@ -1,3 +1,12 @@
 ﻿<Placement>
-  <Place Pages_ScriptingAdminTestbed="Content:5"/>
+  <Place Pages_ScriptingAdminTestbed_ScriptPicker="Content:4"
+         Pages_ScriptingAdminTestbed="Content:5"
+         Parts_Script_Edit="Content:5"/>
+
+  <Match Path="Admin/OrchardHUN.Scripting/Testbed">
+    <Place Parts_Title_Edit="-"
+           Content_SaveButton="-"
+           Content_PublishButton="-"
+           Parts_Common_Owner_Edit="-"/>
+  </Match>
 </Placement>

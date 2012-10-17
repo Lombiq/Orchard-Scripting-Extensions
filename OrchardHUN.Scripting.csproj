@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -15,10 +16,14 @@
     <MvcBuildViews>false</MvcBuildViews>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
+    <OldToolsVersion>4.0</OldToolsVersion>
     <UpgradeBackupLocation />
     <TargetFrameworkProfile />
     <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -61,6 +66,9 @@
   <ItemGroup>
     <Content Include="Placement.info" />
     <Content Include="Styles\orchardhun-scripting-admin.css" />
+    <Content Include="Views\DisplayTemplates\Pages\Admin\Testbed.ScriptPicker.cshtml" />
+    <Content Include="Views\PageWrapper.ScriptingTestbedPage.cshtml" />
+    <None Include="Views\ScriptPicker.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Views\Web.config" />
     <Content Include="Scripts\Web.config" />
@@ -77,18 +85,30 @@
       <Project>{9916839C-39FC-4CEB-A5AF-89CA7E87119F}</Project>
       <Name>Orchard.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Orchard.ContentPicker\Orchard.ContentPicker.csproj">
+      <Project>{F301EF7D-F19C-4D83-AA94-CB64F29C037D}</Project>
+      <Name>Orchard.ContentPicker</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Piedone.HelpfulLibraries\Piedone.HelpfulLibraries.csproj">
-      <Project>{EA61AD10-39D6-41A9-B12B-227F50C54158}</Project>
+      <Project>{ea61ad10-39d6-41a9-b12b-227f50c54158}</Project>
       <Name>Piedone.HelpfulLibraries</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminMenu.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Drivers\CompositeScriptPartDriver.cs" />
     <Compile Include="Drivers\Pages\Admin\ScriptingAdminTestbedPartDriver.cs" />
+    <Compile Include="Drivers\ScriptPartDriver.cs" />
     <Compile Include="EventHandlers\PageEventHandler.cs" />
     <Compile Include="Exceptions\ScriptRuntimeException.cs" />
+    <Compile Include="Handlers\CompositeScriptPartHandler.cs" />
+    <Compile Include="Handlers\ScriptPartHandler.cs" />
+    <Compile Include="Migrations.cs" />
+    <Compile Include="Models\CompositeScriptPart.cs" />
+    <Compile Include="Models\IScriptAspect.cs" />
     <Compile Include="Models\Pages\Admin\ScriptingAdminTestbedPart.cs" />
+    <Compile Include="Models\ScriptPart.cs" />
     <Compile Include="Models\ScriptScope.cs" />
     <Compile Include="PageConfigs.cs" />
     <Compile Include="ResourceManifest.cs" />
@@ -97,12 +117,20 @@
     <Compile Include="Services\IScriptingRuntime.cs" />
     <Compile Include="Services\ScriptingManager.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Views\EditorTemplates\Parts.Script.cshtml" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Views\DisplayTemplates\Pages\Admin\Testbed.cshtml" />
   </ItemGroup>
+  <ItemGroup />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -9,15 +9,9 @@ namespace OrchardHUN.Scripting.Models.Pages.Admin
 {
     public class ScriptingAdminTestbedPart : ContentPart
     {
-        private readonly LazyField<IEnumerable<string>> _registeredEngines = new LazyField<IEnumerable<string>>();
-        public LazyField<IEnumerable<string>> RegisteredEnginesField { get { return _registeredEngines; } }
-        public IEnumerable<string> RegisteredEngines
-        {
-            get { return _registeredEngines.Value; }
-        }
-
-        public string SelectedEngine { get; set; }
-        public string Expression { get; set; }
+        public int ScriptId { get; set; }
+        public ContentItem Script { get; set; }
+        public dynamic EditorShape { get; set; }
         public string Output { get; set; }
     }
 }

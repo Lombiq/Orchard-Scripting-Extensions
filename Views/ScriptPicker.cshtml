@@ -1,0 +1,34 @@
+﻿@{
+    Script.Require("ContentPicker").AtFoot();
+
+    int scriptId = Model.Value == null ? 0 : int.Parse(Model.Value);
+}
+
+<div id="orchardhun-scripting-script-execution-script-picker">
+    @Html.Hidden("ScriptExecutionScriptId", scriptId, new { id = "orchardhun-scripting-script-execution-script-picker-script-id" })
+    <span id="orchardhun-scripting-script-execution-script-picker-selected">
+        @if (scriptId != 0)
+        {
+            @Html.ItemEditLink(WorkContext.Resolve<Orchard.ContentManagement.IContentManager>().Get(scriptId));
+        }
+    </span>
+    <span id="orchardhun-scripting-script-execution-script-picker-add" class="button">@T("Select script")</span>
+</div>
+
+
+@using (Script.Foot()) {
+<script type="text/javascript">
+    (function ($) {
+        var addButton = $("#orchardhun-scripting-script-execution-script-picker-add");
+        addButton.click(function () {
+            addButton.trigger("orchard-admin-contentpicker-open", {
+                callback: function (data) {
+                    $("#orchardhun-scripting-script-execution-script-picker-selected").html(data.editLink);
+                    $("#orchardhun-scripting-script-execution-script-picker-script-id").val(data.id);
+                },
+                baseUrl: "@Href("~/")"
+            });
+        });
+    })(jQuery);
+</script>
+}

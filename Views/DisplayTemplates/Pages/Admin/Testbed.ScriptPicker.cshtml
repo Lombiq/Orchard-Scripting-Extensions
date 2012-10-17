@@ -1,0 +1,56 @@
+﻿@model OrchardHUN.Scripting.Models.Pages.Admin.ScriptingAdminTestbedPart
+@{
+    Script.Require("ContentPicker").AtFoot();
+}
+
+<fieldset id="orchardhun-scripting-testbed-script-picker">
+    <legend>@T("Select an existing script to run")</legend>
+    @Html.HiddenFor(m => m.ScriptId)
+    <span id="orchardhun-scripting-testbed-script-picker-add" class="button">@T("Select script")</span>
+    <span id="orchardhun-scripting-testbed-script-picker-selected">
+        @if (Model.Script != null)
+        {
+            @Html.ItemEditLink(Model.Script);
+        }
+    </span>
+    <span id="orchardhun-scripting-testbed-script-picker-clear" class="button">@T("Clear")</span>
+</fieldset>
+
+
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        (function ($) {
+            var addButton = $("#orchardhun-scripting-testbed-script-picker-add");
+            var clearButton = $("#orchardhun-scripting-testbed-script-picker-clear");
+            var selected = $("#orchardhun-scripting-testbed-script-picker-selected");
+            var sriptIdField = $("#@Html.FieldIdFor(m => m.ScriptId)");
+
+            addButton.click(function () {
+                addButton.trigger("orchard-admin-contentpicker-open", {
+                    callback: function (data) {
+                        selected.html(data.editLink);
+                        sriptIdField.val(data.id);
+                        clearButton.show();
+                    },
+                    baseUrl: "@Href("~/")"
+                });
+            });
+
+            @if (Model.Script != null)
+            {
+                <text>clearButton.show();</text>
+            }
+            else
+            {
+                <text>clearButton.hide();</text>
+            }
+
+            clearButton.click(function () {
+                $(this).hide();
+                selected.html("");
+                sriptIdField.val(0);
+            });
+        })(jQuery);
+    </script>
+}
