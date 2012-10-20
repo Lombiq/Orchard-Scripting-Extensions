@@ -8,7 +8,7 @@ namespace OrchardHUN.Scripting.Models
         protected readonly Dictionary<string, dynamic> _variables = new Dictionary<string, dynamic>();
 
         public string Name { get; private set; }
-        public ICollection<KeyValuePair<string, dynamic>> Variables
+        public IEnumerable<KeyValuePair<string, dynamic>> Variables
         {
             // This should rather return a ReadOnlyDictionary: http://msdn.microsoft.com/en-us/library/gg712875%28v=VS.110%29.aspx
             // Revise after .NET 4.5 upgrade
