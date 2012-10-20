@@ -111,7 +111,7 @@
     <Compile Include="Models\IScriptAspect.cs" />
     <Compile Include="Models\Pages\Admin\ScriptingAdminTestbedPart.cs" />
     <Compile Include="Models\ScriptPart.cs" />
-    <Compile Include="Models\ScriptScope.cs" />
+    <Compile Include="Services\ScriptScope.cs" />
     <Compile Include="PageConfigs.cs" />
     <Compile Include="ResourceManifest.cs" />
     <Compile Include="Rules\ScriptExecution.cs" />

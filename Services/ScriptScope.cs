@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace OrchardHUN.Scripting.Models
+namespace OrchardHUN.Scripting.Services
 {
     public abstract class ScriptScope : IDisposable
     {

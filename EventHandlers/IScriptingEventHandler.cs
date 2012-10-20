@@ -1,9 +1,9 @@
 ﻿using Orchard.Events;
-using OrchardHUN.Scripting.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OrchardHUN.Scripting.Services;
 
 namespace OrchardHUN.Scripting.EventHandlers
 {
