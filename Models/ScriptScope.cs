@@ -1,18 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace OrchardHUN.Scripting.Models
 {
     public abstract class ScriptScope : IDisposable
     {
         protected readonly Dictionary<string, dynamic> _variables = new Dictionary<string, dynamic>();
+        protected readonly HashSet<Assembly> _assemblies = new HashSet<Assembly>();
 
         public string Name { get; private set; }
+
         public IEnumerable<KeyValuePair<string, dynamic>> Variables
         {
-            // This should rather return a ReadOnlyDictionary: http://msdn.microsoft.com/en-us/library/gg712875%28v=VS.110%29.aspx
-            // Revise after .NET 4.5 upgrade
             get { return _variables; }
+        }
+
+        public IEnumerable<Assembly> Assemblies
+        {
+            get { return _assemblies; }
         }
 
 
@@ -21,6 +27,11 @@ namespace OrchardHUN.Scripting.Models
             Name = name;
         }
 
+
+        public bool ContainsVariable(string name)
+        {
+            return GetVariable(name) != null;
+        }
 
         public dynamic GetVariable(string name)
         {
@@ -31,6 +42,26 @@ namespace OrchardHUN.Scripting.Models
         public void SetVariable(string name, dynamic value)
         {
             _variables[name] = value;
+        }
+
+        public void RemoveVariable(string name)
+        {
+            if (ContainsVariable(name)) _variables.Remove(name);
+        }
+
+        public void LoadAssembly(Assembly assembly)
+        {
+            _assemblies.Add(assembly);
+        }
+
+        public bool ContainsAssembly(Assembly assembly)
+        {
+            return _assemblies.Contains(assembly);
+        }
+
+        public void RemoveAssembly(Assembly assembly)
+        {
+            if (ContainsAssembly(assembly)) _assemblies.Remove(assembly);
         }
 
         public void Dispose()
