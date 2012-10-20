@@ -100,6 +100,8 @@
     <Compile Include="Drivers\CompositeScriptPartDriver.cs" />
     <Compile Include="Drivers\Pages\Admin\ScriptingAdminTestbedPartDriver.cs" />
     <Compile Include="Drivers\ScriptPartDriver.cs" />
+    <Compile Include="EventHandlers\DefaultAssemblyLoader.cs" />
+    <Compile Include="EventHandlers\IScriptingEventHandler.cs" />
     <Compile Include="EventHandlers\PageEventHandler.cs" />
     <Compile Include="Exceptions\ScriptRuntimeException.cs" />
     <Compile Include="Handlers\CompositeScriptPartHandler.cs" />

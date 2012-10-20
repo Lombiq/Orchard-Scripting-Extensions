@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using OrchardHUN.Scripting.Models;
+using OrchardHUN.Scripting.EventHandlers;
 
 namespace OrchardHUN.Scripting.Services
 {
     public class ScriptingManager : IScriptingManager
     {
         private readonly Dictionary<string, IScriptingRuntime> _runtimes;
+        private readonly IScriptingEventHandler _eventHandler;
 
 
-        public ScriptingManager(IEnumerable<IScriptingRuntime> runtimes)
+        public ScriptingManager(IEnumerable<IScriptingRuntime> runtimes, IScriptingEventHandler eventHandler)
         {
             _runtimes = runtimes.ToDictionary(runtime => runtime.Engine);
+            _eventHandler = eventHandler;
         }
 
 
@@ -32,7 +35,10 @@ namespace OrchardHUN.Scripting.Services
         {
             if (!_runtimes.ContainsKey(engine)) throw new InvalidOperationException("No \"" + engine + "\" engine registered.");
 
-            return _runtimes[engine].ExecuteExpression(expression, scope);
+            _eventHandler.BeforeExecution(new BeforeExecutionContext(engine, expression, scope));
+            var output = _runtimes[engine].ExecuteExpression(expression, scope);
+            _eventHandler.AfterExecution(new AfterExecutionContext(engine, expression, scope, output));
+            return output;
         }
 
 
