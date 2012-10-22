@@ -1,5 +1,4 @@
 ﻿@model OrchardHUN.Scripting.Models.ScriptPart
-           
 @{
     Style.Require("ScriptingAdmin");
     Script.Require("jQuery").AtFoot();
@@ -10,18 +9,13 @@
     <legend>@T("Scripting")</legend>
     @Html.HiddenFor(m => m.Expression)
     @Html.LabelFor(m => m.Engine, T("Scripting engine"))
-    <select id="@Html.FieldIdFor(m => m.Engine)" name="@Html.FieldNameFor(m => m.Engine)">
-        @foreach (var engine in Model.RegisteredEngines)
-        {
-            @Html.SelectOption(Model.Engine, engine, engine)
-        }
-    </select>
+    @Html.DropDownListFor(m => m.Engine,
+        new SelectList(Model.RegisteredEngines.Select(engine => new SelectListItem { Text = engine, Value = engine }), "Value", "Text"))
     <div id="orchardhun-scripting-editor">@Model.Expression</div>
     <span class="hint">@T("Test your code here. This code should be a pure expression, so if your engine of choice supports code blocks (like PHP does with &#60;?php, ?&#62; tags) don's use them here.")</span>
 </fieldset>
 
-@using (Script.Foot())
-{
+@using (Script.Foot()) {
     <script type="text/javascript">
         (function ($) {
             var editor = ace.edit("orchardhun-scripting-editor");
