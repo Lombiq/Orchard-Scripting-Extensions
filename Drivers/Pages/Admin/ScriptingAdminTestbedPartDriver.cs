@@ -10,6 +10,7 @@ using OrchardHUN.Scripting.Services;
 using Orchard.UI.Notify;
 using Orchard.Localization;
 using OrchardHUN.Scripting.Models;
+using System.Text;
 
 namespace OrchardHUN.Scripting.Drivers.Pages.Admin
 {
@@ -87,10 +88,11 @@ namespace OrchardHUN.Scripting.Drivers.Pages.Admin
                 }
                 catch (ScriptRuntimeException ex)
                 {
-                    _notifier.Error(
-                        T("There was a glitch with your code: {0}"
-                        + Environment.NewLine + Environment.NewLine
-                        + "Details:" + Environment.NewLine + "{1}", ex.Message, ex.InnerException.Message));
+                    var builder = new StringBuilder();
+                    for (Exception current = ex; current != null; current = current.InnerException)
+                        builder.Append(Environment.NewLine + current.Message);
+
+                    _notifier.Error(T("There was a glitch with your code: {0}", builder.ToString()));
                 }
             }
 
