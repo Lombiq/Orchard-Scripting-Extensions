@@ -7,6 +7,7 @@ using Orchard.ContentManagement.Records;
 using System.ComponentModel.DataAnnotations;
 using Orchard.Data.Conventions;
 using Orchard.Core.Common.Utilities;
+using OrchardHUN.Scripting.Services;
 
 namespace OrchardHUN.Scripting.Models
 {
@@ -24,9 +25,9 @@ namespace OrchardHUN.Scripting.Models
             set { Record.Expression = value; }
         }
 
-        private readonly LazyField<IEnumerable<string>> _registeredEngines = new LazyField<IEnumerable<string>>();
-        public LazyField<IEnumerable<string>> RegisteredEnginesField { get { return _registeredEngines; } }
-        public IEnumerable<string> RegisteredEngines
+        private readonly LazyField<IEnumerable<IEngineDescriptor>> _registeredEngines = new LazyField<IEnumerable<IEngineDescriptor>>();
+        public LazyField<IEnumerable<IEngineDescriptor>> RegisteredEnginesField { get { return _registeredEngines; } }
+        public IEnumerable<IEngineDescriptor> RegisteredEngines
         {
             get { return _registeredEngines.Value; }
         }

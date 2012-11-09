@@ -9,7 +9,7 @@ namespace OrchardHUN.Scripting.Services
     /// </summary>
     public interface IScriptingManager : IDependency
     {
-        IEnumerable<string> ListRegisteredEngines();
+        IEnumerable<IEngineDescriptor> ListRegisteredEngines();
         ScriptScope CreateScope(string name);
         dynamic ExecuteExpression(string engine, string expression, ScriptScope scope);
     }

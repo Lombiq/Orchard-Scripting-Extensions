@@ -10,7 +10,7 @@
     @Html.HiddenFor(m => m.Expression)
     @Html.LabelFor(m => m.Engine, T("Scripting engine"))
     @Html.DropDownListFor(m => m.Engine,
-        new SelectList(Model.RegisteredEngines.Select(engine => new SelectListItem { Text = engine, Value = engine }), "Value", "Text"))
+        new SelectList(Model.RegisteredEngines.Select(engine => new SelectListItem { Text = engine.DisplayName.ToString(), Value = engine.Name }), "Value", "Text"))
     <div id="orchardhun-scripting-editor">@Model.Expression</div>
     <span class="hint">@T("Test your code here. This code should be a pure expression, so if your engine of choice supports code blocks (like PHP does with &#60;?php, ?&#62; tags) don's use them here.")</span>
 </fieldset>

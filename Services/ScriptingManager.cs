@@ -14,14 +14,14 @@ namespace OrchardHUN.Scripting.Services
 
         public ScriptingManager(IEnumerable<IScriptingRuntime> runtimes, IScriptingEventHandler eventHandler)
         {
-            _runtimes = runtimes.ToDictionary(runtime => runtime.Engine);
+            _runtimes = runtimes.ToDictionary(runtime => runtime.Descriptor.Name);
             _eventHandler = eventHandler;
         }
 
 
-        public IEnumerable<string> ListRegisteredEngines()
+        public IEnumerable<IEngineDescriptor> ListRegisteredEngines()
         {
-            return _runtimes.Keys;
+            return _runtimes.Values.Select(runtime => runtime.Descriptor);
         }
 
         public ScriptScope CreateScope(string name)
