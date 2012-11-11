@@ -12,27 +12,41 @@
     @Html.DropDownListFor(m => m.Engine,
         new SelectList(Model.RegisteredEngines.Select(engine => new SelectListItem { Text = engine.DisplayName.ToString(), Value = engine.Name }), "Value", "Text"))
     <div id="orchardhun-scripting-editor-@Model.ContentItem.Id" class="orchardhun-scripting-editor">@Model.Expression</div>
-    <span class="hint">@T("Test your code here. This code should be a pure expression, so if your engine of choice supports code blocks (like PHP does with &#60;?php, ?&#62; tags) don's use them here.")</span>
+</fieldset>
+<fieldset id="orchardhun-scripting-help-@Model.ContentItem.Id">
+    <legend>@T("Help")</legend>
+    <div>
+        <div id="orchardhun-scripting-editor-sample" class="orchardhun-scripting-editor"></div>
+        <span id="orchardhun-scripting-hint" class="hint"></span>
+    </div>
 </fieldset>
 
 @using (Script.Foot())
 {
     <script type="text/javascript">
         (function ($) {
-            var editor = ace.edit("orchardhun-scripting-editor-@Model.ContentItem.Id");
             var engine = $("#@Html.FieldIdFor(m => m.Engine)");
+            var editor = ace.edit("orchardhun-scripting-editor-@Model.ContentItem.Id");
             var expression = $("#@Html.FieldIdFor(m => m.Expression)");
+
+            var sample = ace.edit("orchardhun-scripting-editor-sample");
+            var hint = $("#orchardhun-scripting-hint");
+            var help = { "sample": sample, "hint": hint };
 
             $(expression[0].form).submit(function () {
                 expression.val(editor.getValue());
             });
+
+            $("#orchardhun-scripting-help-@Model.ContentItem.Id legend")
+                .expandoControl(function (controller) { return controller.next("div"); }, { collapse: false, remember: false });
 
 
             function triggerSelectedEngineChanged() {
                 $(document).triggerHandler({
                     type: "selectedEngineChanged.ScriptingExtensions",
                     engine: engine.val(),
-                    editor: editor
+                    editor: editor,
+                    help: help
                 });
             }
 
