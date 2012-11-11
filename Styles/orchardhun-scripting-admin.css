@@ -1,8 +1,8 @@
-﻿#orchardhun-scripting-editor
+﻿.orchardhun-scripting-editor
 {
     margin-top: 2em;
     height: 25em;
-    position: relative;
+    position: relative !important;
 }
 
 #orchardhun-scripting-testbed-script-picker-selected
