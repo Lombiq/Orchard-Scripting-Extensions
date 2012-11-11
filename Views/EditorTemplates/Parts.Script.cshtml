@@ -11,7 +11,7 @@
     @Html.LabelFor(m => m.Engine, T("Scripting engine"))
     @Html.DropDownListFor(m => m.Engine,
         new SelectList(Model.RegisteredEngines.Select(engine => new SelectListItem { Text = engine.DisplayName.ToString(), Value = engine.Name }), "Value", "Text"))
-    <div id="orchardhun-scripting-editor">@Model.Expression</div>
+    <div id="orchardhun-scripting-editor-@Model.ContentItem.Id">@Model.Expression</div>
     <span class="hint">@T("Test your code here. This code should be a pure expression, so if your engine of choice supports code blocks (like PHP does with &#60;?php, ?&#62; tags) don's use them here.")</span>
 </fieldset>
 
@@ -19,7 +19,7 @@
 {
     <script type="text/javascript">
         (function ($) {
-            var editor = ace.edit("orchardhun-scripting-editor");
+            var editor = ace.edit("orchardhun-scripting-editor-@Model.ContentItem.Id");
             var engine = $("#@Html.FieldIdFor(m => m.Engine)");
             var expression = $("#@Html.FieldIdFor(m => m.Expression)");
 
