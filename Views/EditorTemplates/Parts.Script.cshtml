@@ -30,6 +30,7 @@
             var expression = $("#@Html.FieldIdFor(m => m.Expression)");
 
             var sample = ace.edit("orchardhun-scripting-editor-sample");
+            sample.setReadOnly(true);
             var hint = $("#orchardhun-scripting-hint");
             var help = { "sample": sample, "hint": hint };
 
