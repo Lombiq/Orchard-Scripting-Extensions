@@ -4,7 +4,7 @@ Author: The Orchard Hungary Team
 Website: http://orchardscriptingext.codeplex.com
 Version: 1.0
 OrchardVersion: 1.6
-Description: Base module for some Orchard scripting extensions
+Description: Base module for some Orchard scripting extensions. Uses the ACE source editor (http://ace.ajax.org) for script editors.
 Features:
     OrchardHUN.Scripting:
 		Name: Orchard Scripting Extensions: Core
