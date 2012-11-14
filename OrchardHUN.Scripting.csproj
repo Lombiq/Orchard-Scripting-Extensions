@@ -118,6 +118,7 @@
     <Compile Include="Services\IScriptingManager.cs" />
     <Compile Include="Services\IScriptingRuntime.cs" />
     <Compile Include="Services\ScriptingManager.cs" />
+    <Compile Include="Services\StaticShape.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\EditorTemplates\Parts.Script.cshtml" />
