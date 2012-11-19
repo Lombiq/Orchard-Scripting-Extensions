@@ -18,6 +18,7 @@
     <div>
         <div id="orchardhun-scripting-editor-sample" class="orchardhun-scripting-editor"></div>
         <span id="orchardhun-scripting-hint" class="hint"></span>
+        <input type="button" id="orchardhun-scripting-copyscript" class="button" value="@T("Copy example to editor")" />
     </div>
 </fieldset>
 
@@ -25,6 +26,9 @@
 {
     <script type="text/javascript">
         (function ($) {
+            $("#orchardhun-scripting-help-@Model.ContentItem.Id legend")
+                .expandoControl(function (controller) { return controller.next("div"); }, { collapse: false, remember: false });
+
             var engine = $("#@Html.FieldIdFor(m => m.Engine)");
             var editor = ace.edit("orchardhun-scripting-editor-@Model.ContentItem.Id");
             var expression = $("#@Html.FieldIdFor(m => m.Expression)");
@@ -38,10 +42,6 @@
                 expression.val(editor.getValue());
             });
 
-            $("#orchardhun-scripting-help-@Model.ContentItem.Id legend")
-                .expandoControl(function (controller) { return controller.next("div"); }, { collapse: false, remember: false });
-
-
             function triggerSelectedEngineChanged() {
                 $(document).triggerHandler({
                     type: "selectedEngineChanged.ScriptingExtensions",
@@ -51,12 +51,16 @@
                 });
             }
 
-            engine.change(function (e) {
+            engine.change(function () {
                 triggerSelectedEngineChanged();
             });
 
             $(document).ready(function () {
                 triggerSelectedEngineChanged();
+            });
+
+            $("#orchardhun-scripting-copyscript").click(function () {
+                editor.getSession().setValue(sample.getSession().getValue());
             });
         })(jQuery);
     </script>
