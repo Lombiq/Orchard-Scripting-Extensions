@@ -68,7 +68,7 @@
     <Content Include="Styles\orchardhun-scripting-admin.css" />
     <Content Include="Views\DisplayTemplates\Pages\Admin\Testbed.ScriptPicker.cshtml" />
     <Content Include="Views\PageWrapper.ScriptingTestbedPage.cshtml" />
-    <None Include="Views\ScriptPicker.cshtml" />
+    <Content Include="Views\ScriptPicker.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Views\Web.config" />
     <Content Include="Scripts\Web.config" />
