@@ -27,7 +27,7 @@
     <script type="text/javascript">
         (function ($) {
             $("#orchardhun-scripting-help-@Model.ContentItem.Id legend")
-                .expandoControl(function (controller) { return controller.next("div"); }, { collapse: false, remember: false });
+                .expandoControl(function (controller) { return controller.next("div"); }, { collapse: true, remember: true });
 
             var engine = $("#@Html.FieldIdFor(m => m.Engine)");
             var editor = ace.edit("orchardhun-scripting-editor-@Model.ContentItem.Id");
@@ -49,6 +49,7 @@
                     editor: editor,
                     help: help
                 });
+                sample.renderer.updateFull(true);
             }
 
             engine.change(function () {
