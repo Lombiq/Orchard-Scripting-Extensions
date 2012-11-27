@@ -1,17 +1,25 @@
 ﻿@model OrchardHUN.Scripting.Models.Pages.Admin.ScriptingAdminTestbedPart
-
 <fieldset id="orchardhun-scripting-testbed-expression">
     <legend>@T("OR write a script here")</legend>
     @Display(Model.EditorShape)
     <span class="hint">@T("If you have an existing script selected it will be run instead the one edited here.")</span>
 </fieldset>
 
-<input type="submit" class="button" value="@T("Run")" />
+<ol>
+    <li>
+        @Html.CheckBoxFor(m => m.ConvertOutputLinebreaks)
+        <label for="@Html.FieldIdFor(m => m.ConvertOutputLinebreaks)" class="forcheckbox">@T("Convert line breaks in the script's output to html line breaks")</label>
+    </li>
+    <li>
+        <input type="submit" class="button" value="@T("Run")" />
 
-@if (!String.IsNullOrEmpty(Model.Output))
-{
+    </li>
+</ol>
+
+@if (!String.IsNullOrEmpty(Model.Output)) {
     <div id="orchardhun-scripting-testbed-output">
         <h2>@T("Output:")</h2>
-        @Html.Raw(Model.Output)
+        @{ var output = Model.ConvertOutputLinebreaks ? Model.Output.Replace(Environment.NewLine, "<br>") : Model.Output; }
+        @Html.Raw(output)
     </div>
 }
