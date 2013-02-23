@@ -16,19 +16,20 @@
 </div>
 
 
-@using (Script.Foot()) {
-<script type="text/javascript">
-    (function ($) {
-        var addButton = $("#orchardhun-scripting-script-execution-script-picker-add");
-        addButton.click(function () {
-            addButton.trigger("orchard-admin-contentpicker-open", {
-                callback: function (data) {
-                    $("#orchardhun-scripting-script-execution-script-picker-selected").html(data.editLink);
-                    $("#orchardhun-scripting-script-execution-script-picker-script-id").val(data.id);
-                },
-                baseUrl: "@Href("~/")"
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        (function ($) {
+            var addButton = $("#orchardhun-scripting-script-execution-script-picker-add");
+            addButton.click(function () {
+                addButton.trigger("orchard-admin-contentpicker-open", {
+                    callback: function (data) {
+                        $("#orchardhun-scripting-script-execution-script-picker-selected").html(data.editLink);
+                        $("#orchardhun-scripting-script-execution-script-picker-script-id").val(data.id);
+                    },
+                    baseUrl: "@Href("~/")"
+                });
             });
-        });
-    })(jQuery);
-</script>
+        })(jQuery);
+    </script>
 }
