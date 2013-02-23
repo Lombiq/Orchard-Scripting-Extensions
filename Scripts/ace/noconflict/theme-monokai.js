@@ -33,8 +33,8 @@ ace.define('ace/theme/monokai', ['require', 'exports', 'module' , 'ace/lib/dom']
 exports.isDark = true;
 exports.cssClass = "ace-monokai";
 exports.cssText = ".ace-monokai .ace_gutter {\
-background: #2f3129;\
-color: #f1f1f1\
+background: #2F3129;\
+color: #8F908A\
 }\
 .ace-monokai .ace_print-margin {\
 width: 1px;\
@@ -77,7 +77,7 @@ background-color: #272727\
 border: 1px solid #49483E\
 }\
 .ace-monokai .ace_invisible {\
-color: #49483E\
+color: #52524d\
 }\
 .ace-monokai .ace_entity.ace_name.ace_tag,\
 .ace-monokai .ace_keyword,\
@@ -114,7 +114,7 @@ font-style: italic;\
 color: #66D9EF\
 }\
 .ace-monokai .ace_entity.ace_name.ace_function,\
-.ace-monokai .ace_entity.ace_other.ace_attribute-name,\
+.ace-monokai .ace_entity.ace_other,\
 .ace-monokai .ace_variable {\
 color: #A6E22E\
 }\

@@ -136,51 +136,14 @@ oop.inherits(Mode, TextMode);
         });
         
         worker.on("highlight", function(tokens) {
+          if(that.$deltas.length > 0) return;
+
           var firstRow = 0;
           var lastRow = session.getLength() - 1;
           
           var lines = tokens.data.lines;
           var states = tokens.data.states;
-          
-          for(var i=0; i < that.$deltas.length; i++)
-          {
-            var delta = that.$deltas[i];
-         
-            if (delta.action === "insertLines")
-            {
-              var newLineCount = delta.lines.length;
-              for (var i = 0; i < newLineCount; i++) {
-                lines.splice(delta.range.start.row + i, 0, undefined);
-                states.splice(delta.range.start.row + i, 0, undefined);
-              }
-            }
-            else if (delta.action === "insertText")
-            {
-              if (session.getDocument().isNewLine(delta.text))
-              {
-                lines.splice(delta.range.end.row, 0, undefined);
-                states.splice(delta.range.end.row, 0, undefined);
-              } else {
-                lines[delta.range.start.row] = undefined;
-                states[delta.range.start.row] = undefined;
-              } 
-            } else if (delta.action === "removeLines") {
-              var oldLineCount = delta.lines.length;
-              lines.splice(delta.range.start.row, oldLineCount);
-              states.splice(delta.range.start.row, oldLineCount);
-            } else if (delta.action === "removeText") {
-              if (session.getDocument().isNewLine(delta.text))
-              {
-                lines[delta.range.start.row] = undefined;
-                lines.splice(delta.range.end.row, 1);
-                states[delta.range.start.row] = undefined;
-                states.splice(delta.range.end.row, 1);
-              } else {
-                lines[delta.range.start.row] = undefined;
-                states[delta.range.start.row] = undefined;
-              }
-            }           
-          }
+           
           session.bgTokenizer.lines = lines;
           session.bgTokenizer.states = states;
           session.bgTokenizer.fireUpdateEvent(firstRow, lastRow);
@@ -201,104 +164,208 @@ var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
 var XQueryHighlightRules = function() {
 
-    var keywordMapper = this.createKeywordMapper({
-        keyword: "after|ancestor|ancestor-or-self|and|as|ascending|attribute|before|case|cast|castable|child|collation|comment|copy|count|declare|default|delete|descendant|descendant-or-self|descending|div|document|document-node|element|else|empty|empty-sequence|end|eq|every|except|first|following|following-sibling|for|function|ge|group|gt|idiv|if|import|insert|instance|intersect|into|is|item|last|le|let|lt|mod|modify|module|namespace|namespace-node|ne|node|only|or|order|ordered|parent|preceding|preceding-sibling|processing-instruction|rename|replace|return|satisfies|schema-attribute|schema-element|self|some|stable|start|switch|text|to|treat|try|typeswitch|union|unordered|validate|where|with|xquery|contains|paragraphs|sentences|times|words|by|collectionreturn|variable|version|option|when|encoding|toswitch|catch|tumbling|sliding|window|at|using|stemming|collection|schema|while|on|nodes|index|external|then|in|updating|value|of|containsbreak|loop|continue|exit|returning|append|json|position"
-    }, "identifier");
+    var keywords = "after|ancestor|ancestor-or-self|and|as|ascending|attribute|before|case|cast|castable|child|collation|comment|copy|count|declare|default|delete|descendant|descendant-or-self|descending|div|document|document-node|element|else|empty|empty-sequence|end|eq|every|except|first|following|following-sibling|for|function|ge|group|gt|idiv|if|import|insert|instance|intersect|into|is|item|last|le|let|lt|mod|modify|module|namespace|namespace-node|ne|node|only|or|order|ordered|parent|preceding|preceding-sibling|processing-instruction|rename|replace|return|satisfies|schema-attribute|schema-element|self|some|stable|start|switch|text|to|treat|try|typeswitch|union|unordered|validate|where|with|xquery|contains|paragraphs|sentences|times|words|by|collectionreturn|variable|version|option|when|encoding|toswitch|catch|tumbling|sliding|window|at|using|stemming|collection|schema|while|on|nodes|index|external|then|in|updating|value|of|containsbreak|loop|continue|exit|returning|append|json|position".split("|");
 
+    var nameStartChar = "[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02ff\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]";
+    var nameChar = "[-._A-Za-z0-9\u00B7\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02ff\u0300-\u037D\u037F-\u1FFF\u200C\u200D\u203f\u2040\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]";
+    var ncname = nameStartChar + nameChar + "*";
+    var qname = "(?:" + ncname + ":)?" + ncname;
+    var eqname = "(?:(?:Q{.*}" + ncname + ")|(?:" + qname + "))";
     this.$rules = {
-        start : [ {
-            token : "text",
-            regex : "<\\!\\[CDATA\\[",
-            next : "cdata"
+        start: [{
+            token: "support.type",
+            regex: "<\\!\\[CDATA\\[",
+            next: "cdata"
         }, {
-            token : "xml-pe",
-            regex : "<\\?.*?\\?>"
+            token: "xml-pe",
+            regex: "<\\?",
+            next: "pi"
         }, {
-            token : "comment",
-            regex : "<\\!--",
-            next : "comment"
-    }, {
-      token : "comment",
-      regex : "\\(:",
-      next : "comment"
+            token: "comment",
+            regex: "<\\!--",
+            next: "xmlcomment"
         }, {
-            token : "text", // opening tag
-            regex : "<\\/?",
-            next : "tag"
+            token: "comment.doc",
+            regex: "\\(:~",
+            next: "comment.doc"
+        },
+        {
+            token: "comment",
+            regex: "\\(:",
+            next: "comment"
+        },
+        {
+            token: ["text", "meta.tag"], // opening tag
+            regex: "(<\\/?)(" + qname + ")",
+            next: "tag"
         }, {
-            token : "constant", // number
-            regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
-    }, {
-            token : "variable", // variable
-            regex : "\\$[a-zA-Z_][a-zA-Z0-9_\\-:]*\\b"
-    }, {
-      token: "string",
-      regex : '".*?"'
-    }, {
-      token: "string",
-      regex : "'.*?'"
+            token: "constant", // number
+            regex: "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
         }, {
-            token : "text",
-            regex : "\\s+"
+            token: "variable", // variable
+            regex: "\\$" + eqname
         }, {
-            token: "support.function",
-            regex: "\\w[\\w+_\\-:]+(?=\\()"
+            token: "string",
+            regex: "'",
+            next:  "apos-string"
         }, {
-      token : keywordMapper,
-      regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
-    }, {
+            token: "string",
+            regex: '"',
+            next:  "quot-string"
+        }, {
+            token: "text",
+            regex: "\\s+"
+        }, {
+            token: function(match) {
+              if(keywords.indexOf(match.toLowerCase()) !== -1) {
+                return "keyword"
+              } else {
+                return "support.function"
+              }
+            }, 
+            regex: eqname
+        }, {
             token: "keyword.operator",
-            regex: "\\*|=|<|>|\\-|\\+"
+            regex: "\\*|:=|=|<|>|\\-|\\+"
         }, {
             token: "lparen",
             regex: "[[({]"
         }, {
             token: "rparen",
             regex: "[\\])}]"
-        } ],
+        }],
+    
+        tag: [{
+            token: "text",
+            regex: "\\/?>",
+            next: "start"
+        }, {
+            token: ["text", "meta.tag"],
+            regex: "(<\\/)(" + qname + ")",
+            next:  "start"
+        }, {
+            token: "meta.tag",
+            regex: qname
+        }, {
+            token: "text",
+            regex: "\\s+"
+        }, {
+            token: "string",
+            regex: "'",
+            next:  "apos-attr"
+        }, {
+           token: "string",
+           regex: '"',
+           next:  "quot-attr"
+        }, {
+            token: "string",
+            regex: "'.*?'"
+        }, {
+            token: "text",
+            regex: "="
+        }],
+        
+        pi: [{
+          token: "xml-pe",
+          regex: ".*\\?>",
+          next: "start"
+        },
+        {
+          token: "xml-pe",
+          regex: ".*"
+        }],
 
-        tag : [ {
-            token : "text",
-            regex : ">",
-            next : "start"
+        cdata: [{
+            token: "support.type",
+            regex: "\\]\\]>",
+            next: "start"
         }, {
-            token : "meta.tag",
-            regex : "[-_a-zA-Z0-9:]+"
+            token: "support.type",
+            regex: "\\s+"
         }, {
-            token : "text",
-            regex : "\\s+"
-        }, {
-            token : "string",
-            regex : '".*?"'
-        }, {
-            token : "string",
-            regex : "'.*?'"
-        } ],
+            token: "support.type",
+            regex: "(?:[^\\]]|\\](?!\\]>))+"
+        }],
+        
+        "comment.doc": [
+          {
+            token: "comment.doc",
+            regex: ":\\)",
+            next:  "start"
+          }, {
+            token: "comment.doc.tag",
+            regex: "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[a-zA-Z]{2,6}"
+          }, {
+            token : "comment.doc.tag",
+            regex : "@[\\w\\d_]+"
+          }, {
+              token : "comment.doc",
+              regex : "\\s+"
+          }, {
+              token : "comment.doc.tag",
+              regex : "TODO"
+          }, {
+              token : "comment.doc",
+              regex : "[^@:^\\s]+"
+          }, {
+              token : "comment.doc",
+              regex : "."
+          }
+        ], 
 
-        cdata : [ {
-            token : "comment",
-            regex : "\\]\\]>",
-            next : "start"
+        comment: [{
+            token: "comment",
+            regex: ".*:\\)",
+            next: "start"
         }, {
-            token : "comment",
-            regex : "\\s+"
+            token: "comment",
+            regex: ".+"
+        }],
+        
+        xmlcomment: [{
+            token: "comment",
+            regex: ".*?-->",
+            next: "start"
         }, {
-            token : "comment",
-            regex : "(?:[^\\]]|\\](?!\\]>))+"
-        } ],
+            token: "comment",
+            regex: ".+"
+        }],
 
-        comment : [ {
-            token : "comment",
-            regex : ".*?-->",
-            next : "start"
+        "apos-string": [{
+          token: "string",
+          regex: ".*'",
+          next: "start"
         }, {
-      token: "comment",
-      regex : ".*:\\)",
-      next : "start"
+          token: "string",
+          regex: ".*"
+        }],
+
+        "quot-string": [{
+          token: "string",
+          regex: '.*"',
+          next: "start"
         }, {
-            token : "comment",
-            regex : ".+"
-    } ]
+          token: "string",
+          regex: ".*"
+        }],
+
+        "apos-attr": [{
+          token: "string",
+          regex: ".*'",
+          next: "tag"
+        }, {
+          token: "string",
+          regex: ".*"
+        }],
+
+        "quot-attr": [{
+          token: "string",
+          regex: '.*"',
+          next: "tag"
+        }, {
+          token: "string",
+          regex: ".*"
+        }]
     };
 };
 
@@ -307,30 +374,41 @@ oop.inherits(XQueryHighlightRules, TextHighlightRules);
 exports.XQueryHighlightRules = XQueryHighlightRules;
 });
 
-ace.define('ace/mode/behaviour/cstyle', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/behaviour', 'ace/token_iterator'], function(require, exports, module) {
+ace.define('ace/mode/behaviour/cstyle', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/behaviour', 'ace/token_iterator', 'ace/lib/lang'], function(require, exports, module) {
 
 
 var oop = require("../../lib/oop");
 var Behaviour = require("../behaviour").Behaviour;
 var TokenIterator = require("../../token_iterator").TokenIterator;
+var lang = require("../../lib/lang");
+
+var SAFE_INSERT_IN_TOKENS =
+    ["text", "paren.rparen", "punctuation.operator"];
+var SAFE_INSERT_BEFORE_TOKENS =
+    ["text", "paren.rparen", "punctuation.operator", "comment"];
+
 
 var autoInsertedBrackets = 0;
 var autoInsertedRow = -1;
 var autoInsertedLineEnd = "";
+var maybeInsertedBrackets = 0;
+var maybeInsertedRow = -1;
+var maybeInsertedLineStart = "";
+var maybeInsertedLineEnd = "";
 
 var CstyleBehaviour = function () {
     
     CstyleBehaviour.isSaneInsertion = function(editor, session) {
         var cursor = editor.getCursorPosition();
         var iterator = new TokenIterator(session, cursor.row, cursor.column);
-        if (!this.$matchTokenType(iterator.getCurrentToken() || "text", ["text", "paren.rparen"])) {
-            iterator = new TokenIterator(session, cursor.row, cursor.column + 1);
-            if (!this.$matchTokenType(iterator.getCurrentToken() || "text", ["text", "paren.rparen"]))
+        if (!this.$matchTokenType(iterator.getCurrentToken() || "text", SAFE_INSERT_IN_TOKENS)) {
+            var iterator2 = new TokenIterator(session, cursor.row, cursor.column + 1);
+            if (!this.$matchTokenType(iterator2.getCurrentToken() || "text", SAFE_INSERT_IN_TOKENS))
                 return false;
         }
         iterator.stepForward();
         return iterator.getCurrentTokenRow() !== cursor.row ||
-            this.$matchTokenType(iterator.getCurrentToken() || "text", ["text", "comment", "paren.rparen"]);
+            this.$matchTokenType(iterator.getCurrentToken() || "text", SAFE_INSERT_BEFORE_TOKENS);
     };
     
     CstyleBehaviour.$matchTokenType = function(token, types) {
@@ -347,6 +425,17 @@ var CstyleBehaviour = function () {
         autoInsertedBrackets++;
     };
     
+    CstyleBehaviour.recordMaybeInsert = function(editor, session, bracket) {
+        var cursor = editor.getCursorPosition();
+        var line = session.doc.getLine(cursor.row);
+        if (!this.isMaybeInsertedClosing(cursor, line))
+            maybeInsertedBrackets = 0;
+        maybeInsertedRow = cursor.row;
+        maybeInsertedLineStart = line.substr(0, cursor.column) + bracket;
+        maybeInsertedLineEnd = line.substr(cursor.column);
+        maybeInsertedBrackets++;
+    };
+    
     CstyleBehaviour.isAutoInsertedClosing = function(cursor, line, bracket) {
         return autoInsertedBrackets > 0 &&
             cursor.row === autoInsertedRow &&
@@ -354,30 +443,50 @@ var CstyleBehaviour = function () {
             line.substr(cursor.column) === autoInsertedLineEnd;
     };
     
+    CstyleBehaviour.isMaybeInsertedClosing = function(cursor, line) {
+        return maybeInsertedBrackets > 0 &&
+            cursor.row === maybeInsertedRow &&
+            line.substr(cursor.column) === maybeInsertedLineEnd &&
+            line.substr(0, cursor.column) == maybeInsertedLineStart;
+    };
+    
     CstyleBehaviour.popAutoInsertedClosing = function() {
         autoInsertedLineEnd = autoInsertedLineEnd.substr(1);
         autoInsertedBrackets--;
     };
+    
+    CstyleBehaviour.clearMaybeInsertedClosing = function() {
+        maybeInsertedBrackets = 0;
+        maybeInsertedRow = -1;
+    };
 
     this.add("braces", "insertion", function (state, action, editor, session, text) {
+        var cursor = editor.getCursorPosition();
+        var line = session.doc.getLine(cursor.row);
         if (text == '{') {
             var selection = editor.getSelectionRange();
             var selected = session.doc.getTextRange(selection);
-            if (selected !== "" && selected !== "{") {
+            if (selected !== "" && selected !== "{" && editor.getWrapBehavioursEnabled()) {
                 return {
                     text: '{' + selected + '}',
                     selection: false
                 };
             } else if (CstyleBehaviour.isSaneInsertion(editor, session)) {
-                CstyleBehaviour.recordAutoInsert(editor, session, "}");
-                return {
-                    text: '{}',
-                    selection: [1, 1]
-                };
+                if (/[\]\}\)]/.test(line[cursor.column])) {
+                    CstyleBehaviour.recordAutoInsert(editor, session, "}");
+                    return {
+                        text: '{}',
+                        selection: [1, 1]
+                    };
+                } else {
+                    CstyleBehaviour.recordMaybeInsert(editor, session, "{");
+                    return {
+                        text: '{',
+                        selection: [1, 1]
+                    };
+                }
             }
         } else if (text == '}') {
-            var cursor = editor.getCursorPosition();
-            var line = session.doc.getLine(cursor.row);
             var rightChar = line.substring(cursor.column, cursor.column + 1);
             if (rightChar == '}') {
                 var matching = session.$findOpeningBracket('}', {column: cursor.column + 1, row: cursor.row});
@@ -390,19 +499,22 @@ var CstyleBehaviour = function () {
                 }
             }
         } else if (text == "\n" || text == "\r\n") {
-            var cursor = editor.getCursorPosition();
-            var line = session.doc.getLine(cursor.row);
+            var closing = "";
+            if (CstyleBehaviour.isMaybeInsertedClosing(cursor, line)) {
+                closing = lang.stringRepeat("}", maybeInsertedBrackets);
+                CstyleBehaviour.clearMaybeInsertedClosing();
+            }
             var rightChar = line.substring(cursor.column, cursor.column + 1);
-            if (rightChar == '}') {
-                var openBracePos = session.findMatchingBracket({row: cursor.row, column: cursor.column + 1});
+            if (rightChar == '}' || closing !== "") {
+                var openBracePos = session.findMatchingBracket({row: cursor.row, column: cursor.column}, '}');
                 if (!openBracePos)
                      return null;
 
-                var indent = this.getNextLineIndent(state, line.substring(0, line.length - 1), session.getTabString());
-                var next_indent = this.$getIndent(session.doc.getLine(openBracePos.row));
+                var indent = this.getNextLineIndent(state, line.substring(0, cursor.column), session.getTabString());
+                var next_indent = this.$getIndent(line);
 
                 return {
-                    text: '\n' + indent + '\n' + next_indent,
+                    text: '\n' + indent + '\n' + next_indent + closing,
                     selection: [1, indent.length, 1, indent.length]
                 };
             }
@@ -417,6 +529,8 @@ var CstyleBehaviour = function () {
             if (rightChar == '}') {
                 range.end.column++;
                 return range;
+            } else {
+                maybeInsertedBrackets--;
             }
         }
     });
@@ -425,7 +539,7 @@ var CstyleBehaviour = function () {
         if (text == '(') {
             var selection = editor.getSelectionRange();
             var selected = session.doc.getTextRange(selection);
-            if (selected !== "") {
+            if (selected !== "" && editor.getWrapBehavioursEnabled()) {
                 return {
                     text: '(' + selected + ')',
                     selection: false
@@ -470,7 +584,7 @@ var CstyleBehaviour = function () {
         if (text == '[') {
             var selection = editor.getSelectionRange();
             var selected = session.doc.getTextRange(selection);
-            if (selected !== "") {
+            if (selected !== "" && editor.getWrapBehavioursEnabled()) {
                 return {
                     text: '[' + selected + ']',
                     selection: false
@@ -516,7 +630,7 @@ var CstyleBehaviour = function () {
             var quote = text;
             var selection = editor.getSelectionRange();
             var selected = session.doc.getTextRange(selection);
-            if (selected !== "") {
+            if (selected !== "" && selected !== "'" && selected != '"' && editor.getWrapBehavioursEnabled()) {
                 return {
                     text: quote + selected + quote,
                     selection: false
@@ -545,6 +659,8 @@ var CstyleBehaviour = function () {
                     col += tokens[x].value.length;
                 }
                 if (!token || (quotepos < 0 && token.type !== "comment" && (token.type !== "string" || ((selection.start.column !== token.value.length+col-1) && token.value.lastIndexOf(quote) === token.value.length-1)))) {
+                    if (!CstyleBehaviour.isSaneInsertion(editor, session))
+                        return;
                     return {
                         text: quote + quote,
                         selection: [1,1]
@@ -567,7 +683,7 @@ var CstyleBehaviour = function () {
         if (!range.isMultiLine() && (selected == '"' || selected == "'")) {
             var line = session.doc.getLine(range.start.row);
             var rightChar = line.substring(range.start.column + 1, range.start.column + 2);
-            if (rightChar == '"') {
+            if (rightChar == selected) {
                 range.end.column++;
                 return range;
             }
