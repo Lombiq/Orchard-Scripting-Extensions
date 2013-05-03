@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using OrchardHUN.Scripting.Models.Pages.Admin;
 using Piedone.HelpfulLibraries.Contents.DynamicPages;
-using OrchardHUN.Scripting.Models.Pages.Admin;
-using OrchardHUN.Scripting.Services;
-using Orchard.Environment;
-using Orchard.ContentManagement;
 
 namespace OrchardHUN.Scripting.EventHandlers
 {

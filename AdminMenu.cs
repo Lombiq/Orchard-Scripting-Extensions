@@ -1,6 +1,6 @@
 ﻿using Orchard.Localization;
-using Orchard.UI.Navigation;
 using Orchard.Security;
+using Orchard.UI.Navigation;
 
 namespace OrchardHUN.Scripting
 {

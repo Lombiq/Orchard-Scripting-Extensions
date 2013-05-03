@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Linq;
-using System.Web.Mvc;
+using Orchard.ContentManagement;
 using Orchard.DisplayManagement;
 using Orchard.Environment.Extensions;
 using Orchard.Events;
 using Orchard.Localization;
-using OrchardHUN.Scripting.Services;
-using Orchard.ContentManagement;
 using OrchardHUN.Scripting.Models;
+using OrchardHUN.Scripting.Services;
 
 namespace OrchardHUN.Scripting.Rules
 {

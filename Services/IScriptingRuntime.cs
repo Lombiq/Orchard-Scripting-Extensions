@@ -1,6 +1,5 @@
 ﻿using Orchard;
 using Orchard.Localization;
-using OrchardHUN.Scripting.Models;
 
 namespace OrchardHUN.Scripting.Services
 {
