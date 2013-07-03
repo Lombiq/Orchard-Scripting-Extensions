@@ -23,7 +23,7 @@ namespace OrchardHUN.Scripting
                     .WithPart("CommonPart")
                     .Creatable()
                     .Draftable()
-            );
+                );
 
             ContentDefinitionManager.AlterPartDefinition("CompositeScriptFieldsPart",
                 part => part
@@ -43,7 +43,7 @@ namespace OrchardHUN.Scripting
                     .WithPart("CommonPart")
                     .Creatable()
                     .Draftable()
-            );
+                );
 
 
             return 1;
