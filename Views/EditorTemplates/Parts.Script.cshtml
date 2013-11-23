@@ -1,7 +1,8 @@
 ﻿@model OrchardHUN.Scripting.Models.ScriptPart
 @{
     Style.Require("ScriptingAdmin");
-    Script.Require("ScriptingAdmin").AtFoot(); // Locally PHP syntax highlighting is not working and can't use CDN here: http://orchard.codeplex.com/workitem/19329
+    Script.Require("jQuery").AtFoot();
+    Script.Require("AceEditor.NoConflict").AtFoot(); // Locally PHP syntax highlighting is not working and can't use CDN here: http://orchard.codeplex.com/workitem/19329
 }
 
 <fieldset>
