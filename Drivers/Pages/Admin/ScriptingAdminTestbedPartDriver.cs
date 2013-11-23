@@ -13,10 +13,15 @@ namespace OrchardHUN.Scripting.Drivers.Pages.Admin
 {
     public class ScriptingAdminTestbedPartDriver : ContentPartDriver<ScriptingAdminTestbedPart>
     {
-        // No prefix here so the inner editor works
         private readonly IScriptingManager _scriptingManager;
         private readonly IContentManager _contentManager;
         private readonly INotifier _notifier;
+
+        // No prefix here so the inner editor works
+        protected override string Prefix
+        {
+            get { return string.Empty; }
+        }
 
         public Localizer T { get; set; }
 
