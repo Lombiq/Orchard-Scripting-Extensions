@@ -12,14 +12,14 @@ namespace OrchardHUN.Scripting.Models
     {
         public string Engine
         {
-            get { return Record.Engine; }
-            set { Record.Engine = value; }
+            get { return Retrieve(x => x.Engine); }
+            set { Store(x => x.Engine, value); }
         }
 
         public string Expression
         {
-            get { return Record.Expression; }
-            set { Record.Expression = value; }
+            get { return this.RetrieveVersioned<string>("Expression"); }
+            set { this.StoreVersioned<string>("Expression", value); }
         }
 
         private readonly LazyField<IEnumerable<IEngineDescriptor>> _registeredEngines = new LazyField<IEnumerable<IEngineDescriptor>>();
@@ -34,8 +34,5 @@ namespace OrchardHUN.Scripting.Models
     {
         [StringLength(256)]
         public virtual string Engine { get; set; }
-
-        [StringLengthMax]
-        public virtual string Expression { get; set; }
     }
 }

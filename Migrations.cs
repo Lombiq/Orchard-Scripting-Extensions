@@ -13,7 +13,6 @@ namespace OrchardHUN.Scripting
                 table => table
                     .ContentPartVersionRecord()
                     .Column<string>("Engine", column => column.WithLength(256))
-                    .Column<string>("Expression", column => column.Unlimited())
                 );
 
             ContentDefinitionManager.AlterTypeDefinition("Script", 
