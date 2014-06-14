@@ -2,6 +2,7 @@
 @{
     Style.Require("ScriptingAdmin");
     Script.Require("jQuery").AtFoot();
+    Script.Include(Url.Content("~/Themes/TheAdmin/Scripts/admin.js")).AtFoot();
     Script.Require("AceEditor.NoConflict").AtFoot(); // Locally PHP syntax highlighting is not working and can't use CDN here: http://orchard.codeplex.com/workitem/19329
 }
 
@@ -26,42 +27,42 @@
 {
     <script type="text/javascript">
         (function ($) {
-            $("#orchardhun-scripting-help-@Model.ContentItem.Id legend")
-                .expandoControl(function (controller) { return controller.next("div"); }, { collapse: true, remember: true });
+            $(function () {
+                $("#orchardhun-scripting-help-@Model.ContentItem.Id legend")
+                    .expandoControl(function (controller) { return controller.next("div"); }, { collapse: true, remember: true });
 
-            var engine = $("#@Html.FieldIdFor(m => m.Engine)");
-            var editor = ace.edit("orchardhun-scripting-editor-@Model.ContentItem.Id");
-            var expression = $("#@Html.FieldIdFor(m => m.Expression)");
+                var engine = $("#@Html.FieldIdFor(m => m.Engine)");
+                var editor = ace.edit("orchardhun-scripting-editor-@Model.ContentItem.Id");
+                var expression = $("#@Html.FieldIdFor(m => m.Expression)");
 
-            var sample = ace.edit("orchardhun-scripting-editor-sample");
-            sample.setReadOnly(true);
-            var hint = $("#orchardhun-scripting-hint");
-            var help = { "sample": sample, "hint": hint };
+                var sample = ace.edit("orchardhun-scripting-editor-sample");
+                sample.setReadOnly(true);
+                var hint = $("#orchardhun-scripting-hint");
+                var help = { "sample": sample, "hint": hint };
 
-            $(expression[0].form).submit(function () {
-                expression.val(editor.getValue());
-            });
-
-            function triggerSelectedEngineChanged() {
-                $(document).triggerHandler({
-                    type: "selectedEngineChanged.ScriptingExtensions",
-                    engine: engine.val(),
-                    editor: editor,
-                    help: help
+                $(expression[0].form).submit(function () {
+                    expression.val(editor.getValue());
                 });
-                sample.renderer.updateFull(true);
-            }
 
-            engine.change(function () {
+                function triggerSelectedEngineChanged() {
+                    $(document).triggerHandler({
+                        type: "selectedEngineChanged.ScriptingExtensions",
+                        engine: engine.val(),
+                        editor: editor,
+                        help: help
+                    });
+                    sample.renderer.updateFull(true);
+                }
+
+                engine.change(function () {
+                    triggerSelectedEngineChanged();
+                });
+
                 triggerSelectedEngineChanged();
-            });
 
-            $(document).ready(function () {
-                triggerSelectedEngineChanged();
-            });
-
-            $("#orchardhun-scripting-copyscript").click(function () {
-                editor.getSession().setValue(sample.getSession().getValue());
+                $("#orchardhun-scripting-copyscript").click(function () {
+                    editor.getSession().setValue(sample.getSession().getValue());
+                });
             });
         })(jQuery);
     </script>
