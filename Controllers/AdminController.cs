@@ -17,21 +17,18 @@ namespace OrchardHUN.Scripting.Controllers
         private readonly IOrchardServices _orchardServices;
         private readonly IContentManager _contentManager;
         private readonly IAuthorizer _authorizer;
-        private readonly IPageEventHandler _pageEventHandler;
 
         public Localizer T { get; set; }
 
 
         public AdminController(
             IScriptingManager scriptingManager,
-            IOrchardServices orchardServices,
-            IPageEventHandler pageEventHandler)
+            IOrchardServices orchardServices)
         {
             _scriptingManager = scriptingManager;
             _orchardServices = orchardServices;
             _contentManager = orchardServices.ContentManager;
             _authorizer = orchardServices.Authorizer;
-            _pageEventHandler = pageEventHandler;
 
             T = NullLocalizer.Instance;
         }
@@ -43,7 +40,6 @@ namespace OrchardHUN.Scripting.Controllers
                 return new HttpUnauthorizedResult();
 
             var page = NewPage("Testbed");
-            _pageEventHandler.OnPageBuilt(new PageContext(page, PageConfigs.AdminGroup));
 
             return PageResult(page);
         }
@@ -55,7 +51,6 @@ namespace OrchardHUN.Scripting.Controllers
                 return new HttpUnauthorizedResult();
 
             var page = NewPage("Testbed");
-            _pageEventHandler.OnPageBuilt(new PageContext(page, PageConfigs.AdminGroup));
             _contentManager.UpdateEditor(page, this);
 
             return PageResult(page);
@@ -74,7 +69,7 @@ namespace OrchardHUN.Scripting.Controllers
 
         private IContent NewPage(string pageName)
         {
-            return _orchardServices.ContentManager.NewPage(pageName, PageConfigs.AdminGroup, _pageEventHandler);
+            return _orchardServices.ContentManager.NewPage(pageName, PageConfigs.AdminGroup);
         }
 
         private ShapeResult PageResult(IContent page)

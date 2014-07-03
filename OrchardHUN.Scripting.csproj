@@ -106,7 +106,7 @@
     <Compile Include="Drivers\ScriptPartDriver.cs" />
     <Compile Include="EventHandlers\DefaultAssemblyLoader.cs" />
     <Compile Include="EventHandlers\IScriptingEventHandler.cs" />
-    <Compile Include="EventHandlers\PageEventHandler.cs" />
+    <Compile Include="Handlers\PageHandler.cs" />
     <Compile Include="Exceptions\ScriptRuntimeException.cs" />
     <Compile Include="Handlers\CompositeScriptPartHandler.cs" />
     <Compile Include="Handlers\ScriptPartHandler.cs" />
