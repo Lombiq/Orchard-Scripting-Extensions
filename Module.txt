@@ -3,14 +3,14 @@ AntiForgery: enabled
 Author: The Orchard Hungary Team / Lombiq
 Website: https://github.com/Lombiq/Orchard-Scripting-Extensions
 Version: 1.0
-OrchardVersion: 1.9.3
+OrchardVersion: 1.10
 Description: Base module for some Orchard scripting extensions. Uses the ACE source editor (http://ace.ajax.org) for script editors.
 Features:
     OrchardHUN.Scripting:
 		Name: Orchard Scripting Extensions: Core
         Description: Base module for some Orchard scripting extensions. Uses the ACE source editor (http://ace.ajax.org) for script editors.
 		Category: Scripting
-		Dependencies: Lombiq.AceEditor, Piedone.HelpfulLibraries.Contents, Orchard.ContentPicker, Orchard.jQuery, Navigation, Title
+		Dependencies: Lombiq.AceEditor, Piedone.HelpfulLibraries.Contents, Orchard.ContentPicker, Orchard.Resources, Navigation, Title
 	OrchardHUN.Scripting.Rules:
 		Name: Orchard Scripting Extensions: Rules
 		Description: Adds the ability to run code through scripting engines in a Rule Action
