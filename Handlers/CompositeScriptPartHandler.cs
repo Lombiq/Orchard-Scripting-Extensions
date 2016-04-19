@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using JetBrains.Annotations;
 using Orchard.ContentManagement;
 using Orchard.ContentManagement.Handlers;
 using Orchard.ContentPicker.Fields;
@@ -9,7 +8,6 @@ using Piedone.HelpfulLibraries.Contents;
 
 namespace OrchardHUN.Scripting.Handlers
 {
-    [UsedImplicitly]
     public class CompositeScriptPartHandler : ContentHandler
     {
         public CompositeScriptPartHandler()
