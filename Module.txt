@@ -3,7 +3,7 @@ AntiForgery: enabled
 Author: The Orchard Hungary Team / Lombiq
 Website: https://github.com/Lombiq/Orchard-Scripting-Extensions
 Version: 1.0
-OrchardVersion: 1.10
+OrchardVersion: 1.10.1
 Description: Base module for some Orchard scripting extensions. Uses the ACE source editor (http://ace.ajax.org) for script editors.
 Features:
     OrchardHUN.Scripting:
