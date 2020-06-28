@@ -1,8 +1,8 @@
-# Orchard Scripting Extensions Readme
+# Orchard Scripting Extensions
 
 
 
-## Project Description
+## About
 
 Core module for running scripts inside Orchard.
 
@@ -67,12 +67,9 @@ This action can be used to run an arbitrary script when an event fires. You can 
 
 By implementing the simple IScriptingRuntime interface you can write your own interface that can then used with all the common scripting features. Take a look at [PHP Scripting Extensions](https://github.com/Lombiq/Orchard-Scripting-Extensions-PHP) for an example.
 
-The module's source is available in two public source repositories, automatically mirrored in both directions with [Git-hg Mirror](https://githgmirror.com):
 
-- [https://bitbucket.org/Lombiq/orchard-scripting-extensions](https://bitbucket.org/Lombiq/orchard-scripting-extensions) (Mercurial repository)
-- [https://github.com/Lombiq/Orchard-Scripting-Extensions](https://github.com/Lombiq/Orchard-Scripting-Extensions) (Git repository)
+## Contributing and support
 
-Bug reports, feature requests and comments are warmly welcome, **please do so via GitHub**.
-Feel free to send pull requests too, no matter which source repository you choose for this purpose.
+Bug reports, feature requests, comments, questions, code contributions, and love letters are warmly welcome, please do so via GitHub issues and pull requests. Please adhere to our [open-source guidelines](https://lombiq.com/open-source-guidelines) while doing so.
 
-This project is developed by [Lombiq Technologies Ltd](http://lombiq.com/). Commercial-grade support is available through Lombiq.
+This project is developed by [Lombiq Technologies](https://lombiq.com/). Commercial-grade support is available through Lombiq.
